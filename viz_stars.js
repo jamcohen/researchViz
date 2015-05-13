@@ -11,16 +11,9 @@ if(!controls){
 function StarViz(falseNeg, truePos, falsePos, trueNeg, canvasId){
 	this.c = document.getElementById(canvasId);
 	this.ctx = this.c.getContext("2d");
-	this.total = this.c.width*0.9; //max size
+	this.barLength = this.c.width*0.9; //max size
 	this.start = (this.c.width-this.total)/2;
-	this.barLength = this.total;
-     this.isAlternate = isAlternate; //If true text will change to "Diagnosed correctly" and trueneg will switch will falsePos
-  if(isAlternate){
-      var tmp = falsePos;
-      falsePos = trueNeg;
-      trueNeg = tmp;
-    console.log("trueNeg: "+trueNeg);
-  }
+
 	var sick = falseNeg + truePos;
 	this.dividerPos = this.barLength*sick;
 	this.yScale = 30;
@@ -29,17 +22,10 @@ function StarViz(falseNeg, truePos, falsePos, trueNeg, canvasId){
 	this.trueNeg = trueNeg;
 	this.truePos = truePos;
 	this.falsePos = falsePos;
-	this.drawNumbers = drawNumbers;
 	//Set the size equal to the overlap/total * length of bar
 	this.size = (truePos+falsePos)*this.barLength;
 	this.overlapPos = this.start + falseNeg*this.barLength + this.size/2;
 	controls.push(this);
-	//console.log(controls);
-	if(interactable){
-		setInterval(update, 60);
-	}
-	this.showTopBrackets = showTopBrackets;
-	this.showBottomBrackets = showBottomBrackets;
 	this.draw();
 }
 
@@ -91,85 +77,94 @@ StarViz.prototype.update = function(){
 }
 
 StarViz.prototype.draw = function(){
-	this.c.width = this.c.width;
+	//this.c.width = this.c.width;
 	var ctx = this.ctx;
-	var sickBar = this.dividerPos/this.total*this.barLength
-	var healthyBar = (1-this.dividerPos/this.total)*this.barLength;
-	var overlapPos = this.overlapPos/this.total*this.barLength;
-	var intersectBar = this.size/this.total*this.barLength;
-	var leftSide = (this.overlapPos-this.size/2)/this.total*this.barLength;
-	var rightSide = (this.overlapPos+this.size/2)/this.total*this.barLength;
-	var fnBar = sickBar - this.leftSide;
-	var fbBar = rightSide - healthyBar
-	ctx.fillStyle = "red";
-	ctx.fillRect(this.start, this.barHeight, sickBar, this.yScale);
-	ctx.fillStyle = 'rgba(0,0,255,0.5)';
+    ctx.save();
+    ctx.strokeSyle = "black";
+    ctx.lineWidth = 0;
+	/*ctx.fillStyle = 'rgba(0,0,255,0.5)';
 	ctx.fillRect(overlapPos-intersectBar/2, this.barHeight-4, intersectBar, this.yScale+8);
 	ctx.strokeStyle = 'rgba(0,0,0,0.65)'
 	ctx.lineWidth = 3;
 	ctx.strokeRect(overlapPos-intersectBar/2, this.barHeight-4, intersectBar, this.yScale+8);
 	ctx.strokeStyle = 'black'
-	ctx.lineWidth = 2;
-	ctx.strokeRect(this.start, this.barHeight, sickBar, this.yScale)
-	ctx.strokeRect(this.start+sickBar, this.barHeight, healthyBar, this.yScale)
-	
-	ctx.fillStyle = 'black';
-	ctx.font = "14px Arial";
-	if(this.showBottomBrackets){
-		this.drawBracket("Sick People", this.start, this.start+sickBar-2, false, this.barHeight, 10);
-		this.drawBracket("Healthy People", this.start+sickBar+2, healthyBar+this.start+sickBar, false, this.barHeight, 10);
-	}
-	if(this.showTopBrackets){
-    var topLabel = this.isAlternate ? "Diagnosed Correctly" : "Tested Sick"
-		this.drawBracket(topLabel, leftSide+2, rightSide-2, true, this.barHeight-7, 15);
-		//this.drawBracket("Tested Healthy", this.start, leftSide-2, true, this.barHeight, 10);
-		//this.drawBracket("Tested Healthy", rightSide+2, this.barLength+this.start, true, this.barHeight, 10);
-	}
-	
-	if(this.drawNumbers){
-		textHeight = this.barHeight+20;
+	ctx.lineWidth = 2;*/
+	//ctx.strokeRect(this.start, this.barHeight, sickBar, this.yScale)
+	//ctx.strokeRect(this.start+sickBar, this.barHeight, healthyBar, this.yScale)
+    var rowHeight = 75;
+    //draw clipping shapes
+    ctx.beginPath()
+    this.drawStarRow(175, 0, 5, 450,100);
+    this.drawStarRow(175, rowHeight, 5, 450, 100);
+    ctx.closePath();
+    ctx.clip();
     
-    if(this.falseNeg > 0 && this.falseNeg <= 0.5){
-        ctx.fillText(Math.round(this.falseNeg*200)+"%", leftSide/2, textHeight);
-    }
-		this.ctx.save()
-		this.ctx.fillStyle = 'white';
-    if(this.truePos > 0 && this.truePos <= 0.5){
-        ctx.fillText(Math.round(this.truePos*200)+"%", leftSide + (sickBar-leftSide-this.start)/2, textHeight);
-    }
-		this.ctx.restore();
-    if(this.falsePos > 0 && this.falsePos <= 0.5){
-        ctx.fillText(Math.round(this.falsePos*200)+"%", sickBar+fbBar/2, textHeight);
-    }
-    if(this.trueNeg > 0 && this.trueNeg <= 0.5){
-        ctx.fillText(Math.round(this.trueNeg*200)+"%", sickBar+(healthyBar+fbBar)/2, textHeight);
-    }
-	}
-	
+    //draw fill
+    var width = 450-175;
+    var size = width/5;
+    ctx.fillStyle = "rgb(219, 83, 138)";
+    var fillStartPos = 175-size/2;
+    var fillWidth = width*this.truePos*2;
+    console.log("trueneg "+this.trueNeg);
+    ctx.fillRect(fillStartPos, 0, fillWidth, 100);
+    
+    ctx.fillStyle = "rgb(83, 219, 164)";
+    fillWidth = width*this.trueNeg*2;
+    ctx.fillRect(fillStartPos, rowHeight, fillWidth, 100);
+    
+    ctx.restore();
+    
+    //Draw outlines
+    ctx.lineWidth = 2;
+    ctx.beginPath()
+    this.drawStarRow(175, 0, 5, 450,100);
+    this.drawStarRow(175, rowHeight, 5, 450, 100);
+    ctx.closePath();
+    
+    console.log("drew a star");
+    
+	ctx.fillStyle = 'black';
+	ctx.font = "24px Arial";
+    ctx.fillText("Avoids false", 5, 50);
+    ctx.fillText("reassurances", 5, 75);
+    ctx.fillText("Avoids false", 5, 50+rowHeight);
+    ctx.fillText("alarms", 5, 75+rowHeight);
 	ctx.restore();
 }
 
-//legLength is the lenght of the brackets "legs" (the two line the come out the sides)
-StarViz.prototype.drawBracket = function(name, start, end, isOnTop, barHeight, legLength){
-	if(end-start < 1) return;
-	var ctx = this.ctx;
-	//draw intersection bracket
-	midPoint = start+(end-start)/2;
-	minHeight = isOnTop ? barHeight-15+legLength: barHeight+this.yScale+15-legLength
-	maxHeight = isOnTop ? barHeight-15 : barHeight+this.yScale+15
-	notchHeight = isOnTop ? barHeight-25 : barHeight+this.yScale+25
-	textHeight = isOnTop ? barHeight-27 : barHeight+this.yScale+40
-	ctx.moveTo(start, minHeight);
-	ctx.lineTo(start, maxHeight);
-	ctx.lineTo(end, maxHeight);
-	ctx.lineTo(end, minHeight);
-	ctx.moveTo(midPoint, maxHeight)
-	ctx.lineTo(midPoint, notchHeight)
-	ctx.fillText(name, midPoint-(name.length)*(3.4), textHeight) //sub 25 to center the text
-	ctx.stroke();
-	ctx.restore();
+StarViz.prototype.drawStarRow = function(x, y, numStars, width, height){
+    var ctx = this.ctx;
+    width -= x;
+    var size = width/numStars; //the height of the row also specifies the size of the star
+    for(var i=0; i<numStars; ++i){
+        this.drawStar(x+i*size, y+height/2, 5, size/2, size/5);
+    }
+    ctx.stroke();
 }
 
+//Found at http://stackoverflow.com/questions/25837158/how-to-draw-a-star-by-using-canvas-html5
+StarViz.prototype.drawStar = function(cx,cy,spikes,outerRadius,innerRadius){
+      var ctx = this.ctx;
+      var rot=Math.PI/2*3;
+      var x=cx;
+      var y=cy;
+      var step=Math.PI/spikes;
+
+      ctx.strokeSyle="#000";
+      ctx.moveTo(cx,cy-outerRadius)
+      for(i=0;i<spikes;i++){
+        x=cx+Math.cos(rot)*outerRadius;
+        y=cy+Math.sin(rot)*outerRadius;
+        ctx.lineTo(x,y)
+        rot+=step
+
+        x=cx+Math.cos(rot)*innerRadius;
+        y=cy+Math.sin(rot)*innerRadius;
+        ctx.lineTo(x,y)
+        rot+=step
+      }
+      ctx.lineTo(cx,cy-outerRadius)
+}
 
 function update(){
 	for(i in controls){
