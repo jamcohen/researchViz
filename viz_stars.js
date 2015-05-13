@@ -8,7 +8,7 @@ if(!controls){
 	var controls = [];
 }
 //falsePos, truePos etc. must be floats less than one whose sum is one
-function ControlBar(falseNeg, truePos, falsePos, trueNeg, interactable, showTopBrackets, showBottomBrackets, drawNumbers,canvasId, showBar, isAlternate){
+function StarViz(falseNeg, truePos, falsePos, trueNeg, canvasId){
 	this.c = document.getElementById(canvasId);
 	this.ctx = this.c.getContext("2d");
 	this.total = this.c.width*0.9; //max size
@@ -43,7 +43,7 @@ function ControlBar(falseNeg, truePos, falsePos, trueNeg, interactable, showTopB
 	this.draw();
 }
 
-ControlBar.prototype.update = function(){
+StarViz.prototype.update = function(){
 	var inc = 5;
 	if(this.left){
 		this.dividerPos-=inc;
@@ -90,7 +90,7 @@ ControlBar.prototype.update = function(){
 	}
 }
 
-ControlBar.prototype.draw = function(){
+StarViz.prototype.draw = function(){
 	this.c.width = this.c.width;
 	var ctx = this.ctx;
 	var sickBar = this.dividerPos/this.total*this.barLength
@@ -150,7 +150,7 @@ ControlBar.prototype.draw = function(){
 }
 
 //legLength is the lenght of the brackets "legs" (the two line the come out the sides)
-ControlBar.prototype.drawBracket = function(name, start, end, isOnTop, barHeight, legLength){
+StarViz.prototype.drawBracket = function(name, start, end, isOnTop, barHeight, legLength){
 	if(end-start < 1) return;
 	var ctx = this.ctx;
 	//draw intersection bracket
