@@ -102,13 +102,13 @@ StarViz.prototype.draw = function(){
     //draw fill
     var width = 450-175;
     var size = width/5;
-    ctx.fillStyle = "D6BE7A";
+    ctx.fillStyle = "rgb(237, 230, 126)";
     var fillStartPos = 175-size/2;
     var fillWidth = width*this.truePos*2;
     console.log("trueneg "+this.trueNeg);
     ctx.fillRect(fillStartPos, 0, fillWidth, 100);
     
-    ctx.fillStyle = "7A92D6";
+    ctx.fillStyle = "rgb(126, 133, 237)";
     fillWidth = width*this.trueNeg*2;
     ctx.fillRect(fillStartPos, rowHeight, fillWidth, 100);
     
@@ -125,8 +125,8 @@ StarViz.prototype.draw = function(){
     
 	ctx.fillStyle = 'black';
 	ctx.font = "24px Arial";
-    ctx.fillText("Avoids false", 5, 50);
-    ctx.fillText("reassurances", 5, 75);
+    ctx.fillText("Avoid false", 5, 50);
+    ctx.fillText("reassurance", 5, 75);
     ctx.fillText("Avoids false", 5, 50+rowHeight);
     ctx.fillText("alarms", 5, 75+rowHeight);
 	ctx.restore();
