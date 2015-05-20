@@ -102,13 +102,13 @@ StarViz.prototype.draw = function(){
     //draw fill
     var width = 450-175;
     var size = width/5;
-    ctx.fillStyle = "rgb(219, 83, 138)";
+    ctx.fillStyle = "D6BE7A";
     var fillStartPos = 175-size/2;
     var fillWidth = width*this.truePos*2;
     console.log("trueneg "+this.trueNeg);
     ctx.fillRect(fillStartPos, 0, fillWidth, 100);
     
-    ctx.fillStyle = "rgb(83, 219, 164)";
+    ctx.fillStyle = "7A92D6";
     fillWidth = width*this.trueNeg*2;
     ctx.fillRect(fillStartPos, rowHeight, fillWidth, 100);
     
