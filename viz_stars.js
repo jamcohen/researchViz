@@ -126,7 +126,7 @@ StarViz.prototype.draw = function(){
 	ctx.fillStyle = 'black';
 	ctx.font = "24px Arial";
     ctx.fillText("Avoids false", 5, 50);
-    ctx.fillText("alarms", 5, 75);
+    ctx.fillText("alarm", 5, 75);
     ctx.fillText("Avoids false", 5, 50+rowHeight);
     ctx.fillText("reassurance", 5, 75+rowHeight);
 	ctx.restore();
